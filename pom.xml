@@ -11,6 +11,9 @@
 	<groupId>com.spring</groupId>
 	<artifactId>calculator</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<!-- Paketas(archyvas) kuriame bus sudeti visi aplikacijos moduliai. War naudojamas aplikacijos idejimui i tomcat
+	 server
+	 -->
 	<packaging>war</packaging>
 	<name>calculator</name>
 	<description>Internet calculator</description>
@@ -18,16 +21,18 @@
 		<java.version>17</java.version>
 	</properties>
 	<dependencies>
+		<!-- Skirta spring boot web aplikacijoms-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
+		<!-- tomcat serveris aplikacijos paleidimui -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		<!-- skirta testams -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
