@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.spring</groupId>
-	<artifactId>calculator</artifactId>
+	<artifactId>calculatorMano</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<!-- Paketas(archyvas) kuriame bus sudeti visi aplikacijos moduliai. War naudojamas aplikacijos idejimui i tomcat
 	 server
@@ -33,6 +33,21 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+
+		<!-- reikalingas, kad veiktu projektas su JSP failais -->
+		<dependency>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-jasper</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- jeigu nepridesime, gausime javax.servlet.ServletException -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>4.0.1</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
