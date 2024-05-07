@@ -1,11 +1,14 @@
 package com.spring.calculator;
 
+import jakarta.validation.Valid;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -26,7 +29,9 @@ public class CalculatorController {
     //    String skaiciuoti(@RequestParam HashMap<String, String> skaiciai) {
     //kadangi skaiciuotuvo forma naudoja Post metoda, cia irgi nurodome POST
     @RequestMapping(method = RequestMethod.GET, value = "/")
-    public String index(){
+    public String index(Model model) {
+        // jeigu model 'number' nepraeina validacijos - per ji grazinamos validacijos klaidos i view
+        model.addAttribute("number", new Number());
         return "skaiciuotuvas";
     }
 
@@ -38,26 +43,35 @@ public class CalculatorController {
 //        String zenklas = skaiciai.get("zenklas");
     //ir galima sitaip
     @RequestMapping(method = RequestMethod.POST, value = "/skaiciuoti")
-    public String skaiciuoti(int sk1, int sk2, String zenklas, ModelMap modelMap) {
+    String skaiciuoti(@Valid @ModelAttribute("number") Number e, BindingResult br, @RequestParam HashMap<String, String> skaiciai, ModelMap modelMap) {
+        if(br.hasErrors()){
+            return "skaiciuotuvas";
+        } else {
 
-        int rezultatas = 0;
+            int sk1 = Integer.parseInt(skaiciai.get("sk1"));
+            int sk2 = Integer.parseInt(skaiciai.get("sk2"));
+            String zenklas = skaiciai.get("zenklas");
 
-        switch (zenklas) {
-            case "+" -> rezultatas = sk1 + sk2;
-            case "-" -> rezultatas = sk1 - sk2;
-            case "*" -> rezultatas = sk1 * sk2;
-            case "/" -> rezultatas = sk1 / sk2;
-            default -> {
-                return "skaiciuotuvas";
+
+            int rezultatas = 0;
+
+            switch (zenklas) {
+                case "+" -> rezultatas = sk1 + sk2;
+                case "-" -> rezultatas = sk1 - sk2;
+                case "*" -> rezultatas = sk1 * sk2;
+                case "/" -> rezultatas = sk1 / sk2;
+                default -> {
+                    return "skaiciuotuvas";
+                }
             }
+
+            //modelmap objektas naudojamas siusti reiksmes is spring mvc controller i jsp
+            modelMap.put("sk1", sk1);
+            modelMap.put("sk2", sk2);
+            modelMap.put("zenklas", zenklas);
+            modelMap.put("rezultatas", rezultatas);
+
+            return "skaiciuoti";
         }
-
-        //modelmap objektas naudojamas siusti reiksmes is spring mvc controller i jsp
-        modelMap.put("sk1", sk1);
-        modelMap.put("sk2", sk2);
-        modelMap.put("zenklas", zenklas);
-        modelMap.put("rezultatas", rezultatas);
-
-        return "skaiciuoti";
     }
 }
