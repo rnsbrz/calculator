@@ -1,10 +1,11 @@
-package com.spring.calculator;
+package com.spring.calculator.controller;
 
+import com.spring.calculator.model.Number;
+import com.spring.calculator.service.NumberService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -18,8 +19,11 @@ import java.util.HashMap;
 //@RestController negrazina view
 //kadangi mums reikia grazinti view pagal Spring MVC, naudojame @Controller
 @Controller
-
+@EnableAutoConfiguration
 public class CalculatorController {
+    @Autowired
+    @Qualifier("NumberService")
+    public NumberService numberService;
 
     //url pavyzdys http://localhost:8080/skaiciuoti?sk1=3&sk2=4&zenklas=%2B
     // reikia naudoti %2B vietoj +, nes kitaip neveikia
@@ -35,13 +39,6 @@ public class CalculatorController {
         return "skaiciuotuvas";
     }
 
-    //galima sitaip
-//    @RequestMapping(method = RequestMethod.POST, value = "/skaiciuoti")
-//    public String skaiciuoti(@RequestParam HashMap<String, String> skaiciai, ModelMap modelMap)
-//int sk1 = Integer.parseInt(skaiciai.get("sk1"));
-//        int sk2 = Integer.parseInt(skaiciai.get("sk2"));
-//        String zenklas = skaiciai.get("zenklas");
-    //ir galima sitaip
     @RequestMapping(method = RequestMethod.POST, value = "/skaiciuoti")
     String skaiciuoti(@Valid @ModelAttribute("number") Number e, BindingResult br, @RequestParam HashMap<String, String> skaiciai, ModelMap modelMap) {
         if(br.hasErrors()){
@@ -70,6 +67,8 @@ public class CalculatorController {
             modelMap.put("sk2", sk2);
             modelMap.put("zenklas", zenklas);
             modelMap.put("rezultatas", rezultatas);
+
+            numberService.save(new Number(sk1,sk2,zenklas,rezultatas));
 
             return "skaiciuoti";
         }
