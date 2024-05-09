@@ -11,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.HashMap;
 
 // web kontroleris. pazymi mvc valdikli. leidzia viduja naudoti @requestMapping
@@ -32,14 +31,14 @@ public class CalculatorController {
     //    @RequestMapping(method = RequestMethod.GET, value = "/skaiciuoti")
     //    String skaiciuoti(@RequestParam HashMap<String, String> skaiciai) {
     //kadangi skaiciuotuvo forma naudoja Post metoda, cia irgi nurodome POST
-    @RequestMapping(method = RequestMethod.GET, value = "/")
+    @GetMapping("/")
     public String index(Model model) {
         // jeigu model 'number' nepraeina validacijos - per ji grazinamos validacijos klaidos i view
         model.addAttribute("number", new Number());
         return "skaiciuotuvas";
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/skaiciuoti")
+    @PostMapping("/skaiciuoti")
     String skaiciuoti(@Valid @ModelAttribute("number") Number e, BindingResult br, @RequestParam HashMap<String, String> skaiciai, ModelMap modelMap) {
         if(br.hasErrors()){
             return "skaiciuotuvas";
@@ -72,5 +71,32 @@ public class CalculatorController {
 
             return "skaiciuoti";
         }
+    }
+
+    @GetMapping("/skaiciai")
+    public String getAllNumbers(Model model) {
+        model.addAttribute("skaiciai", numberService.getAll());
+        return "skaiciai";
+    }
+    @GetMapping("/rodyti{id}")
+    public String getById(int id, Model model) {
+        model.addAttribute("skaicius", numberService.getById(id));
+        return "skaicius";
+    }
+    @GetMapping("/trinti{id}")
+    public String delete(int id, Model model) {
+        numberService.delete(id);
+        model.addAttribute("skaiciai", numberService.getAll());
+        return "skaiciai";
+    }
+    @GetMapping("atnaujinti{id}")
+    public String update(int id, Model model) {
+        model.addAttribute("skaicius", numberService.getById(id));
+        return "atnaujinti";
+    }
+    @PostMapping("/atnaujintiSkaiciu")
+    public String updateNumber(@ModelAttribute("skaicius") Number number) {
+        numberService.update(number);
+        return "redirect:/rodyti?id=" + number.getId();
     }
 }

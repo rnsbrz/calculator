@@ -22,7 +22,7 @@ public class NumberDAOImpl implements NumberDAO {
         EntityManager entityManager = JPAUtil.getEntityManagerFactory().createEntityManager();
         entityManager.getTransaction().begin();
 
-        List<Number> numbers = entityManager.
+        List list = entityManager.
                 createQuery("SELECT n FROM Number n WHERE n.id = :id")
                 .setParameter("id", id)
                 .getResultList();
@@ -30,21 +30,22 @@ public class NumberDAOImpl implements NumberDAO {
         entityManager.getTransaction().commit();
         entityManager.close();
 
-        return numbers.get(0);
+        return (Number) list.get(0);
     }
 
     public List<Number> findEntities() {
-        EntityManager entityManager = JPAUtil.getEntityManagerFactory().createEntityManager();
+        EntityManager entityManager =
+                JPAUtil.getEntityManagerFactory().createEntityManager();
         entityManager.getTransaction().begin();
 
-        List<Number> numbers = entityManager.
+        List list = entityManager.
                 createQuery("SELECT n FROM Number n")
                 .getResultList();
 
         entityManager.getTransaction().commit();
         entityManager.close();
 
-        return numbers;
+        return list;
     }
 
     public void updateEntity(Number number) {
